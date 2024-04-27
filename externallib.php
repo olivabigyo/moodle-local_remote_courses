@@ -99,10 +99,13 @@ class local_remote_courses_external extends external_api {
                 }
             }
 
+            $classification = course_classify_for_timeline((object) $course);
+
             $result[] = array(
                 'id' => $course['id'],
                 'shortname' => $course['shortname'],
                 'fullname' => $course['fullname'],
+                'classification' => $classification,
                 'term' => $term,
                 'visible' => $course['visible'],
                 'roles' => $roles,
@@ -173,6 +176,7 @@ class local_remote_courses_external extends external_api {
                     'id'        => new external_value(PARAM_INT, 'id of course'),
                     'shortname' => new external_value(PARAM_RAW, 'short name of course'),
                     'fullname'  => new external_value(PARAM_RAW, 'long name of course'),
+                    'classification' => new external_value(PARAM_RAW, 'timeline classification of course'),
                     'term'      => new external_value(PARAM_RAW, 'the course term, if applicable'),
                     'visible'   => new external_value(PARAM_INT, '1 means visible, 0 means hidden course'),
                     'roles'     => new external_multiple_structure(
