@@ -26,3 +26,5 @@ $string['extracttermcode'] = 'Term code';
 $string['extracttermcode_desc'] = 'Use this setting to define a regular expression for extracting the term code from a course idnumber. For example, <code>/[0-9]+\.([0-9]+)/</code> would extract "201610" from "999999.201610"';
 $string['pluginname'] = 'Remote course web service';
 $string['privacy:metadata'] = 'The web service only returns data stored in other locations.';
+$string['eduidfieldname'] = 'Edu-Id Fieldname';
+$string['eduidfieldname_desc'] = 'This field contains the unique EDU-ID used for identifying and linking users within the system. It is utilized for integration with external course providers and services and is unique to each user.';

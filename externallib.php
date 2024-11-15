@@ -63,34 +63,45 @@ class local_remote_courses_external extends external_api {
      * @param string $username
      * @return array
      */
-    public static function get_courses_by_username($username) {
+    public static function get_courses_by_username($eduid)
+    {
         global $DB;
 
         // Validate parameters passed from webservice.
-        $params = self::validate_parameters(self::get_courses_by_username_parameters(), array('username' => $username));
+//        $params = self::validate_parameters(self::get_courses_by_username_parameters(), array('username' => $eduid));
 
         // Extract the userid from the username.
-        $userid = $DB->get_field('user', 'id', array('username' => $username));
+        $eduIdFieldname = get_string('eduidfieldname', 'local_remote_courses');
+        $userid         = $DB->get_field_sql(
+            "SELECT id 
+                FROM {user} 
+                WHERE $eduIdFieldname = :eduid 
+                AND email LIKE :emailpattern",
+            [
+                'eduid'        => $eduid,
+                'emailpattern' => '%students.zhaw.ch',
+            ]
+        );
 
         // Get the courses.
         $courses = core_enrol_external::get_users_courses($userid);
 
         // Process results: apply term logic and drop enrollment counts.
-        $result = array();
+        $result          = [];
         $extracttermcode = get_config('local_remote_courses', 'extracttermcode');
 
         $favouritecourseids = [];
-        $ufservice = \core_favourites\service_factory::get_service_for_user_context(\context_user::instance($userid));
-        $favourites = $ufservice->find_favourites_by_type('core_course', 'courses');
+        $ufservice          = \core_favourites\service_factory::get_service_for_user_context(\context_user::instance($userid));
+        $favourites         = $ufservice->find_favourites_by_type('core_course', 'courses');
         foreach ($favourites as $favourite) {
             $favouritecourseids[] = $favourite->itemid;
         }
 
         foreach ($courses as $course) {
-            $roles = array(); // Reset roles for each course.
+            $roles = []; // Reset roles for each course.
 
             $coursecontext = context_course::instance($course['id']);
-            $userroles = get_user_roles($coursecontext, $userid, false);
+            $userroles     = get_user_roles($coursecontext, $userid, false);
             foreach ($userroles as $role) {
                 $roles[] = $role->shortname;
             }
@@ -107,24 +118,24 @@ class local_remote_courses_external extends external_api {
             }
 
             $classification = course_classify_for_timeline((object) $course);
-            $favourite = in_array($course['id'], $favouritecourseids) ? 1 : 0;
+            $favourite      = in_array($course['id'], $favouritecourseids) ? 1 : 0;
 
-            $result[] = array(
-                'id' => $course['id'],
-                'shortname' => $course['shortname'],
-                'fullname' => $course['fullname'],
+            $result[] = [
+                'id'             => $course['id'],
+                'shortname'      => $course['shortname'],
+                'fullname'       => $course['fullname'],
                 'classification' => $classification,
-                'favourite' => $favourite,
-                'term' => $term,
-                'visible' => $course['visible'],
-                'roles' => $roles,
-            );
+                'favourite'      => $favourite,
+                'term'           => $term,
+                'visible'        => $course['visible'],
+                'roles'          => $roles,
+            ];
         }
 
         // Sort courses by recent access.
         $courselist = self::get_recent_courses($userid);
-        $unsorted = $result;
-        $sorted = array();
+        $unsorted   = $result;
+        $sorted     = [];
         foreach ($result as $cid => $course) {
             $sort = array_search($course['id'], $courselist);
             if ($sort !== false) {
