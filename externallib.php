@@ -71,15 +71,20 @@ class local_remote_courses_external extends external_api {
 //        $params = self::validate_parameters(self::get_courses_by_username_parameters(), array('username' => $eduid));
 
         // Extract the userid from the username.
-        $eduIdFieldname = get_string('eduidfieldname', 'local_remote_courses');
+        $eduIdFieldname = get_config('local_remote_courses', 'eduidfieldname');
+
         $userid         = $DB->get_field_sql(
-            "SELECT id 
-                FROM {user} 
-                WHERE $eduIdFieldname = :eduid 
-                AND email LIKE :emailpattern",
+            "select u.id
+             from mdl_user_info_field uif
+             left join  mdl_user_info_data uid on uif.id = uid.fieldid
+             left join mdl_user u on u.id = uid.userid
+             where u.email like :email
+             and uid.data = :eduid
+             and uif.shortname = :shortname",
             [
                 'eduid'        => $eduid,
-                'emailpattern' => '%students.zhaw.ch',
+                'email' => '%students.zhaw.ch',
+                'shortname' => $eduIdFieldname
             ]
         );
 

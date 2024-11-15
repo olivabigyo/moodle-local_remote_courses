@@ -36,7 +36,7 @@ if ($hassiteconfig) {
         'local_remote_courses/eduidfieldname',
         get_string('eduidfieldname', 'local_remote_courses'),
         get_string('eduidfieldname_desc', 'local_remote_courses'),
-        'SwissEduPersonUniqueID',
+        'swissEduIDUniqueID',
         PARAM_TEXT
     ));
 }
