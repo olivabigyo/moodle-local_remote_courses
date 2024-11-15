@@ -75,9 +75,9 @@ class local_remote_courses_external extends external_api {
 
         $userid         = $DB->get_field_sql(
             "select u.id
-             from mdl_user_info_field uif
-             left join  mdl_user_info_data uid on uif.id = uid.fieldid
-             left join mdl_user u on u.id = uid.userid
+             from {user_info_field} uif
+             left join {user_info_data} uid on uif.id = uid.fieldid
+             left join {user} u on u.id = uid.userid
              where u.email like :email
              and uid.data = :eduid
              and uif.shortname = :shortname",
@@ -194,7 +194,7 @@ class local_remote_courses_external extends external_api {
      *
      * @return \core_external\external_description
      */
-    public static function get_courses_by_username_returns() {
+    public static function get_courses_by_eduid_returns() {
         return new external_multiple_structure(
             new external_single_structure(
                 array(
