@@ -63,7 +63,7 @@ class local_remote_courses_external extends external_api {
      * @param string $username
      * @return array
      */
-    public static function get_courses_by_username($eduid)
+    public static function get_courses_by_eduid($eduid)
     {
         global $DB;
 
