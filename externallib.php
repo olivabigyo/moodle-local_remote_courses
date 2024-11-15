@@ -19,6 +19,7 @@
  *
  * @package    local_remote_courses
  * @copyright  2015 Lafayette College ITS
+ * @copyright  2024 ZHAW
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -33,10 +34,11 @@ use core_external\external_value;
 require_once("$CFG->dirroot/enrol/externallib.php");
 
 /**
- * Returns a user's courses based on username.
+ * Returns a user's courses based on eduid.
  *
  * @package   local_remote_courses
  * @copyright 2015 Lafayette College ITS
+ * @copyright 2024 ZHAW
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class local_remote_courses_external extends external_api {
@@ -45,10 +47,10 @@ class local_remote_courses_external extends external_api {
      *
      * @return external_function_parameters
      */
-    public static function get_courses_by_username_parameters() {
+    public static function get_courses_by_eduid_parameters() {
         return new external_function_parameters(
                 array(
-                    'username' => new external_value(PARAM_USERNAME, 'username'),
+                    'eduid' => new external_value(PARAM_EMAIL, 'eduid'),
                 )
         );
     }
@@ -57,10 +59,10 @@ class local_remote_courses_external extends external_api {
      * Get a user's enrolled courses.
      *
      * This is a wrapper of core_enrol_get_users_courses(). It accepts
-     * the username instead of the id and does some optional filtering
+     * the eduid instead of the id and does some optional filtering
      * logic on the idnumber.
      *
-     * @param string $username
+     * @param string $eduid
      * @return array
      */
     public static function get_courses_by_eduid($eduid)
@@ -68,9 +70,9 @@ class local_remote_courses_external extends external_api {
         global $DB;
 
         // Validate parameters passed from webservice.
-//        $params = self::validate_parameters(self::get_courses_by_username_parameters(), array('username' => $eduid));
+        $params = self::validate_parameters(self::get_courses_by_eduid_parameters(), array('eduid' => $eduid));
 
-        // Extract the userid from the username.
+        // Extract the userid from the eduid.
         $eduIdFieldname = get_config('local_remote_courses', 'eduidfieldname');
 
         $userid         = $DB->get_field_sql(
@@ -190,7 +192,7 @@ class local_remote_courses_external extends external_api {
     }
 
     /**
-     * Returns description of get_courses_by_username_returns() result value.
+     * Returns description of get_courses_by_eduid_returns() result value.
      *
      * @return \core_external\external_description
      */

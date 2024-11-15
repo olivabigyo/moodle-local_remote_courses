@@ -19,17 +19,18 @@
  *
  * @package    local_remote_courses
  * @copyright  2015 Lafayette College ITS
+ * @copyright  2024 ZHAW
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
 $functions = array(
-    'local_remote_courses_get_courses_by_username' => array(
+    'local_remote_courses_get_courses_by_eduid' => array(
         'classname'    => 'local_remote_courses_external',
-        'methodname'   => 'get_courses_by_username',
+        'methodname'   => 'get_courses_by_eduid',
         'classpath'    => 'local/remote_courses/externallib.php',
-        'description'  => 'Get user\'s courses by username.',
+        'description'  => 'Get user\'s courses by eduid.',
         'type'         => 'read',
         'capabilities' => 'moodle/course:view, moodle/course:viewparticipants',
     ),
