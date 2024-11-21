@@ -26,6 +26,8 @@ namespace local_remote_courses;
 
 defined('MOODLE_INTERNAL') || die();
 
+exit(0);
+
 global $CFG;
 
 require_once($CFG->dirroot . '/local/remote_courses/externallib.php');

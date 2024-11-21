@@ -19,6 +19,7 @@
  *
  * @package    local_remote_courses
  * @copyright  2016 Lafayette College ITS
+ * @copyright  2024 ZHAW
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -31,4 +32,12 @@ if ($hassiteconfig) {
      $settings->add(new admin_setting_configtext('local_remote_courses/extracttermcode',
         new lang_string('extracttermcode', 'local_remote_courses'),
         new lang_string('extracttermcode_desc', 'local_remote_courses'), '', PARAM_NOTAGS));
+
+    $settings->add(new admin_setting_configtext(
+        'local_remote_courses/eduidfieldname',
+        get_string('eduidfieldname', 'local_remote_courses'),
+        get_string('eduidfieldname_desc', 'local_remote_courses'),
+        'swissEduIDUniqueID',
+        PARAM_TEXT
+    ));
 }
