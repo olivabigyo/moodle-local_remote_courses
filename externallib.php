@@ -136,7 +136,7 @@ class local_remote_courses_external extends external_api
                 'shortname' => $course['shortname'],
                 'fullname' => $course['fullname'],
                 'classification' => $classification,
-                'description' => $course['summary'],
+                'description' => strip_tags($course['summary']),
                 'favourite' => $favourite,
                 'term' => $term,
                 'visible' => $course['visible'],
