@@ -29,6 +29,7 @@ $functions = [
         'classname'    => 'local_mycoursesapi\external\get_courses_by_eduid',
         'description'  => 'Get user\'s courses by eduid.',
         'type'         => 'read',
+        'ajax'         => true,
         'capabilities' => 'moodle/course:view, moodle/course:viewparticipants',
     ],
 ];

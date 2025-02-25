@@ -27,6 +27,7 @@ namespace local_mycoursesapi\external;
 defined('MOODLE_INTERNAL') || die;
 
 require_once "$CFG->libdir/externallib.php";
+require_once "$CFG->dirroot/course/lib.php";
 require_once "$CFG->dirroot/enrol/externallib.php";
 
 use core_enrol_external;
@@ -38,35 +39,42 @@ use external_value;
 
 class get_courses_by_eduid extends external_api
 {
-    /**
-     * Returns description of method parameters
-     *
-     * @return external_function_parameters
-     */
-    public static function get_courses_by_eduid_parameters()
+    public static function execute_parameters(): external_function_parameters
     {
-        return new external_function_parameters(
-            [
-                'eduid' => new external_value(PARAM_EMAIL, 'eduid'),
-            ]
+        return new external_function_parameters([
+            'eduid' => new external_value(PARAM_EMAIL, 'User edu-ID'),
+        ]);
+    }
+
+    public static function execute_returns(): external_multiple_structure
+    {
+        return new external_multiple_structure(
+            new external_single_structure([
+                'id'             => new external_value(PARAM_INT, 'id of course'),
+                'shortname'      => new external_value(PARAM_RAW, 'short name of course'),
+                'fullname'       => new external_value(PARAM_RAW, 'long name of course'),
+                'classification' => new external_value(PARAM_RAW, 'timeline classification of course'),
+                'description'    => new external_value(PARAM_RAW, 'course description'),
+                'favourite'      => new external_value(PARAM_INT, '1 means favourite, 0 means not favourite'),
+                'visible'        => new external_value(PARAM_INT, '1 means visible, 0 means hidden course'),
+            ])
         );
     }
 
     /**
      * Get a user's enrolled courses.
      *
-     * This is a wrapper of core_enrol_get_users_courses(). It accepts
-     * the eduid instead of the id.
-     *
-     * @param string $eduid
-     * @return array
+     * This is a wrapper of core_enrol_get_users_courses().
+     * It takes the edu-ID instead of the id.
      */
-    public static function get_courses_by_eduid($eduid)
+    public static function execute(string $eduid): array
     {
         global $DB;
 
         // Validate parameters passed from webservice.
-        $params = self::validate_parameters(self::get_courses_by_eduid_parameters(), ['eduid' => $eduid]);
+        $params = self::validate_parameters(self::execute_parameters(), [
+            'eduid' => $eduid
+        ]);
 
         // Extract the userid from the eduid.
         $eduIdFieldname = get_config('local_mycoursesapi', 'eduidfieldname');
@@ -79,14 +87,16 @@ class get_courses_by_eduid extends external_api
              and uid.data = :eduid
              and uif.shortname = :shortname",
             [
-                'eduid' => $eduid,
+                'eduid' => $params['eduid'],
                 'shortname' => $eduIdFieldname
             ]
         );
 
         // Get the courses.
-        $courses = core_enrol_external::get_users_courses($userid);
-        $result = [];
+        // $courses = core_enrol_external::get_users_courses($userid, false /* $returnusercount */);
+        // This returns an empty array. Our servo user don't have some permissions.
+        $courses = enrol_get_users_courses($userid, true, '*');
+
         $favouritecourseids = [];
         $ufservice = \core_favourites\service_factory::get_service_for_user_context(\context_user::instance($userid));
         $favourites = $ufservice->find_favourites_by_type('core_course', 'courses');
@@ -94,45 +104,22 @@ class get_courses_by_eduid extends external_api
             $favouritecourseids[] = $favourite->itemid;
         }
 
+        $result = [];
         foreach ($courses as $course) {
-            $classification = course_classify_for_timeline((object) $course);
-            $favourite = in_array($course['id'], $favouritecourseids) ? 1 : 0;
+            $classification = course_classify_for_timeline($course);
+            $favourite = in_array($course->id, $favouritecourseids) ? 1 : 0;
 
             $result[] = [
-                'id' => $course['id'],
-                'shortname' => $course['shortname'],
-                'fullname' => $course['fullname'],
+                'id' => $course->id,
+                'shortname' => $course->shortname,
+                'fullname' => $course->fullname,
                 'classification' => $classification,
-                'description' => html_entity_decode(strip_tags($course['summary'])),
+                'description' => html_entity_decode(strip_tags($course->summary)),
                 'favourite' => $favourite,
-                'visible' => $course['visible'],
+                'visible' => $course->visible,
             ];
         }
 
         return $result;
-    }
-
-
-    /**
-     * Returns description of get_courses_by_eduid_returns() result value.
-     *
-     * @return \core_external\external_description
-     */
-    public static function get_courses_by_eduid_returns()
-    {
-        return new external_multiple_structure(
-            new external_single_structure(
-                [
-                    'id'        => new external_value(PARAM_INT, 'id of course'),
-                    'shortname' => new external_value(PARAM_RAW, 'short name of course'),
-                    'fullname'  => new external_value(PARAM_RAW, 'long name of course'),
-                    'classification' => new external_value(PARAM_RAW, 'timeline classification of course'),
-                    'description' => new external_value(PARAM_RAW, 'course description'),
-                    'favourite' => new external_value(PARAM_INT, '1 means favourite, 0 means not favourite'),
-                    'visible'   => new external_value(PARAM_INT, '1 means visible, 0 means hidden course'),
-
-                ]
-            )
-        );
     }
 }
