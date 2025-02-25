@@ -22,27 +22,21 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_mycoursesapi;
+namespace local_mycoursesapi\external;
 
 defined('MOODLE_INTERNAL') || die;
 
+require_once "$CFG->libdir/externallib.php";
+require_once "$CFG->dirroot/enrol/externallib.php";
+
 use core_enrol_external;
-use core_external\external_api;
-use core_external\external_function_parameters;
-use core_external\external_multiple_structure;
-use core_external\external_single_structure;
-use core_external\external_value;
+use external_api;
+use external_function_parameters;
+use external_multiple_structure;
+use external_single_structure;
+use external_value;
 
-require_once("$CFG->dirroot/enrol/externallib.php");
-
-/**
- * Returns a user's courses based on eduid.
- *
- * @package   local_mycoursesapi
- * @copyright 2024 ZHAW
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-class external extends external_api
+class get_courses_by_eduid extends external_api
 {
     /**
      * Returns description of method parameters
@@ -72,7 +66,7 @@ class external extends external_api
         global $DB;
 
         // Validate parameters passed from webservice.
-        $params = self::validate_parameters(self::get_courses_by_eduid_parameters(), array('eduid' => $eduid));
+        $params = self::validate_parameters(self::get_courses_by_eduid_parameters(), ['eduid' => $eduid]);
 
         // Extract the userid from the eduid.
         $eduIdFieldname = get_config('local_mycoursesapi', 'eduidfieldname');

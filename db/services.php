@@ -17,21 +17,18 @@
 /**
  * Custom web services for this plugin.
  *
- * @package    local_remote_courses
- * @copyright  2015 Lafayette College ITS
+ * @package    local_mycoursesapi
  * @copyright  2024 ZHAW
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
-$functions = array(
-    'local_remote_courses_get_courses_by_eduid' => array(
-        'classname'    => 'local_remote_courses_external',
-        'methodname'   => 'get_courses_by_eduid',
-        'classpath'    => 'local/remote_courses/externallib.php',
+$functions = [
+    'local_mycoursesapi_get_courses_by_eduid' => [
+        'classname'    => 'local_mycoursesapi\external\get_courses_by_eduid',
         'description'  => 'Get user\'s courses by eduid.',
         'type'         => 'read',
         'capabilities' => 'moodle/course:view, moodle/course:viewparticipants',
-    ),
-);
+    ],
+];

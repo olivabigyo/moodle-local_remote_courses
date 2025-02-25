@@ -15,16 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Language strings for local_remote_courses.
+ * Language strings for local_mycoursesapi.
  *
- * @package    local_remote_courses
- * @copyright  2015 Lafayette College ITS
+ * @package    local_mycoursesapi
+ * @copyright  2025 ZHAW
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['extracttermcode'] = 'Term code';
-$string['extracttermcode_desc'] = 'Use this setting to define a regular expression for extracting the term code from a course idnumber. For example, <code>/[0-9]+\.([0-9]+)/</code> would extract "201610" from "999999.201610"';
-$string['pluginname'] = 'Remote course web service';
+$string['pluginname'] = 'myCourses Web API';
 $string['privacy:metadata'] = 'The web service only returns data stored in other locations.';
-$string['eduidfieldname'] = 'Edu-Id Fieldname';
-$string['eduidfieldname_desc'] = 'This field contains the unique EDU-ID used for identifying and linking users within the system. It is utilized for integration with external course providers and services and is unique to each user.';
+$string['eduidfieldname'] = 'Edu-ID field name';
+$string['eduidfieldname_desc'] = 'This field contains the unique Edu-ID used for identifying and linking users within the system. It is utilized for integration with external course providers and services and is unique to each user.';

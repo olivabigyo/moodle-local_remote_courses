@@ -15,28 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configuration settings for local_remote_courses.
+ * Configuration settings for local_mycoursesapi
  *
- * @package    local_remote_courses
- * @copyright  2016 Lafayette College ITS
- * @copyright  2024 ZHAW
+ * @package    local_mycoursesapi
+ * @copyright  2025 ZHAW
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
-     $settings = new admin_settingpage('local_remote_courses', get_string('pluginname', 'local_remote_courses'));
+     $settings = new admin_settingpage('local_mycoursesapi', get_string('pluginname', 'local_mycoursesapi'));
      $ADMIN->add('localplugins', $settings);
 
-     $settings->add(new admin_setting_configtext('local_remote_courses/extracttermcode',
-        new lang_string('extracttermcode', 'local_remote_courses'),
-        new lang_string('extracttermcode_desc', 'local_remote_courses'), '', PARAM_NOTAGS));
-
     $settings->add(new admin_setting_configtext(
-        'local_remote_courses/eduidfieldname',
-        get_string('eduidfieldname', 'local_remote_courses'),
-        get_string('eduidfieldname_desc', 'local_remote_courses'),
+        'local_mycoursesapi/eduidfieldname',
+        get_string('eduidfieldname', 'local_mycoursesapi'),
+        get_string('eduidfieldname_desc', 'local_mycoursesapi'),
         'swissEduIDUniqueID',
         PARAM_TEXT
     ));
